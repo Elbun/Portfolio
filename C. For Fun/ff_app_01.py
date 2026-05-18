@@ -8,7 +8,10 @@ import matplotlib.pyplot as plt
 import scipy
 
 # Set page layout
-st.set_page_config(layout="centered")
+st.set_page_config(layout="centered",
+    page_title="Body Mass Index",
+    page_icon="🚹"
+)
 
 # Set folder
 folder_path = "C. For Fun/"
@@ -18,10 +21,10 @@ train_dataset = pd.read_csv(folder_path+"bmi_data/bmi_train.csv")
 test_dataset = pd.read_csv(folder_path+"bmi_data/bmi_validation.csv")
 
 # Set page config
-st.set_page_config(
-    page_title="Body Mass Index",
-    page_icon="🚹"
-)
+# st.set_page_config(
+#     page_title="Body Mass Index",
+#     page_icon="🚹"
+# )
 
 
 st.title("Body Mass Index")
