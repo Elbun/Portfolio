@@ -4,4 +4,3 @@ pandas
 altair
 pydeck
 ast
-math
