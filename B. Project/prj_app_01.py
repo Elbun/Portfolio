@@ -644,7 +644,7 @@ with tab3:
             df_customer_ar2["AR_Aging_Group_Order"] = np.select(conditions, values2, default=99)
             df_customer_ar2["Color"] = np.select(conditions, values4, default="gray")
             df_customer_ar2["Max_Aging_in_Group"] = np.select(conditions, values3, default=999)
-            df_customer_ar2 = df_customer_ar2.groupby(["Customer_ID","AR_Aging_Group","AR_Aging_Group_Order","Color","Max_Aging_in_Group"]).sum("Remaining_Amount").reset_index().sort_values("AR_Aging_Group_Order", ascending=True)
+            df_customer_ar2 = df_customer_ar2.groupby(["Customer_ID","AR_Aging_Group","AR_Aging_Group_Order","Color","Max_Aging_in_Group"])["Remaining_Amount"].sum().reset_index().sort_values("AR_Aging_Group_Order", ascending=True)
             df_customer_ar2 = pd.merge(df_customer_ar2, df_master_customer, on="Customer_ID", how="left")
             df_customer_ar2["Color_Index"] = np.where(
                                                 df_customer_ar2["Max_Aging_in_Group"] == df_customer_ar2["TOP_Days"], 
