@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 import scipy
 
 # Set page layout
-st.set_page_config(layout="centered",
-    page_title="Body Mass Index",
-    page_icon="🚹"
+st.set_page_config(layout="centered"
+    # page_title="Body Mass Index",
+    # page_icon="🚹"
 )
 
 # Set folder
