@@ -5,7 +5,7 @@ import pydeck as pdk
 import ast
 import altair as alt
 import math
-from lib_function import insert_icon, sales_horizontal_bar_chart, image_to_base64
+from lib_function import insert_icon, sales_horizontal_bar_chart
 
 print("-----------------------------------------------------------------------------------------------------------------------------------------")
 print("Start printing")
