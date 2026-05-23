@@ -7,7 +7,7 @@ pages = {
     ],
     "Project Showcase" : [
         st.Page("B. Project/prj_app_01.py", title = "Customer Geo Tagging"),    # loc branch, loc customer, customer info
-        st.Page("B. Project/prj_app_02.py", title = "Warehouse Monitoing"),     # DOI, ED, 
+        # st.Page("B. Project/prj_app_02.py", title = "Warehouse Monitoing"),     # DOI, ED, 
         # st.Page("B. Project", title = "Finance Dashboard"),       # Net sales, BS, PL
     ],
     "For Fun" : [
