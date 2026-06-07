@@ -75,6 +75,18 @@ with tab1:
     with col2:
         insert_icon(path, "geo_tag_relation_model.png")
         
+    st.subheader("Product results")
+    st.html('''<p style="text-align:justify;">As the results, first product is a comprehensive sales dashboard was developed to monitor the sales and collection performance. In the dashboard, 
+        there is selection zone for users to filter the data based on the branch or the customer segment. The KPI cards present the number of company branch, the number of active customer 
+        (have made at least one purchase), the number of invoice created and overdued invoice, and sales value (gross and net). There are also charts that can compare the sales performance between branches, 
+        customer segment, the top 10 customer, outstanding account receivables, and sales trend along the year. In addition, there is also a map that illustrates where th customer located.</p>
+            
+        <p style="text-align:justify;">For more rigid anlysis, we can add a master data about <b>product</b>. The second product is about the detail of a customer selected. There is a table that 
+        shows about customer informations and a map to show the geo location of a customer and its serving branch. There are also two charts to explain the customer behaviour. The first chart is 
+        about transaction value that the customer has made along the year. The value is presented in gross and net value. The second chart is about the outstanding value that the customer still have 
+        to pay to the company and colored by the status either it is overdue or not (based on the customer TOP). </p>
+        ''')
+        
     st.subheader("Future Improvements")
     st.html('''<p style="text-align:justify;">For future improvements, this analysis can be added by <b>sales target</b> and <b>AR collection target</b> data. This data can be combined with
         sales data or AR data to monitor the company achievement to the target, either it achieves the target or not. The target data is broken down by branch target so each 
