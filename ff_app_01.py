@@ -11,7 +11,8 @@ import scipy
 st.set_page_config(layout="centered")
 
 # Set folder
-folder_path = "C. For Fun/"
+# folder_path = "C. For Fun/"
+folder_path = ""
 
 # Get the data
 train_dataset = pd.read_csv(folder_path+"bmi_data/bmi_train.csv")
