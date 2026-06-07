@@ -14,7 +14,8 @@ print("Start printing")
 st.set_page_config(layout="wide")
 
 #----------------------------- Set folder path
-path = "B. Project/geotag_data/"
+# path = "B. Project/geotag_data/"
+path = "geotag_data/"
 
 #----------------------------- Read data file
 df_master_branch = pd.read_excel(path+"master_branch.xlsx")
