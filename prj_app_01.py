@@ -81,10 +81,9 @@ with tab1:
         (have made at least one purchase), the number of invoice created and overdued invoice, and sales value (gross and net). There are also charts that can compare the sales performance between branches, 
         customer segment, the top 10 customer, outstanding account receivables, and sales trend along the year. In addition, there is also a map that illustrates where th customer located.</p>
             
-        <p style="text-align:justify;">For more rigid anlysis, we can add a master data about <b>product</b>. The second product is about the detail of a customer selected. There is a table that 
-        shows about customer informations and a map to show the geo location of a customer and its serving branch. There are also two charts to explain the customer behaviour. The first chart is 
-        about transaction value that the customer has made along the year. The value is presented in gross and net value. The second chart is about the outstanding value that the customer still have 
-        to pay to the company and colored by the status either it is overdue or not (based on the customer TOP). </p>
+        <p style="text-align:justify;">The second product is about the detail of a customer selected. There is a table that shows about customer informations and a map to show the geo location of a customer 
+        and its serving branch. There are also two charts to explain the customer behaviour. The first chart is about transaction value that the customer has made along the year. The value is presented in 
+        gross and net value. The second chart is about the outstanding value that the customer still have to pay to the company and colored by the status either it is overdue or not (based on the customer TOP). </p>
         ''')
         
     st.subheader("Future Improvements")
