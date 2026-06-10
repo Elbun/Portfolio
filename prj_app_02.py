@@ -15,7 +15,7 @@ st.set_page_config(layout="wide")
 
 #----------------------------- Set folder path
 # path = "B. Project/whs_monitor_data/"
-path = ""
+path = "whs_monitor_data/"
 
 #----------------------------- Read data file
 df_master_branch = pd.read_csv(path+"master_warehouse_branches.csv", sep=",")
