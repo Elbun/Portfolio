@@ -38,8 +38,9 @@ with tab1:
             
         <p style="text-align:justify;">In order to monitor its sales and collection performance, the company need to have a big overview about how much the sales 
         transaction and AR remaining also where they happen relative to the company branch. Maintaining a lot of customer requires a lot of effort for the company. 
-        So this system is developed to help the company "finding a spot" in a quick way. This project showcase demonstrates a project that I have done in the company. 
-        The data and model used in this showcase are simplified just to show how the data processing works.</p>''')
+        So this system is developed to help the company "finding a spot" in a quick way. This project showcase demonstrates a project that I have done in the company.</p>
+
+        <p style="text-align:justify;">Note : The data and model used in this showcase are simplified just to show how the data processing works.</p>''')
     
     st.subheader("Data Model")
     col1, col2 = st.columns(2)
