@@ -1,0 +1,11 @@
+Branch_ID,Branch_Name,Branch_Capacity_m3
+WH-JKT01,Jakarta Central Hub,15000
+WH-SBY01,Surabaya East Depot,12500
+WH-BDG01,Bandung West Distribution Center,8000
+WH-SMG01,Semarang Central Transit,9500
+WH-BKS01,Bekasi Industrial Logistics,14000
+WH-TNG01,Tangerang Gateway Warehouse,11000
+WH-BPR01,Bogor Cold-Chain Facility,6500
+WH-MLG01,Malang Regional Depot,5000
+WH-SLO01,Solo Mataram Storage,5500
+WH-YOG01,Yogyakarta Fulfillment Center,4500

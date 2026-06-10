@@ -1,0 +1,121 @@
+Product_ID,Product_Name,Principal_ID,Principal_Name,Product_Value,Product_Volume_cm3
+PRD-001,Amoxicillin 500mg (Apex),PRN-01,Apex Pharma Inc.,139000,56
+PRD-002,Paracetamol 500mg (Apex),PRN-01,Apex Pharma Inc.,306000,112
+PRD-003,Metformin ER (Apex),PRN-01,Apex Pharma Inc.,253000,85
+PRD-004,Atorvastatin 20mg (Apex),PRN-01,Apex Pharma Inc.,129000,223
+PRD-005,Omeprazole 20mg (Apex),PRN-01,Apex Pharma Inc.,583000,72
+PRD-006,Azithromycin 500mg (Apex),PRN-01,Apex Pharma Inc.,457000,58
+PRD-007,Ibuprofen 400mg (Apex),PRN-01,Apex Pharma Inc.,55000,73
+PRD-008,Cetirizine 10mg (Apex),PRN-01,Apex Pharma Inc.,248000,109
+PRD-009,Losartan Potassium (Apex),PRN-01,Apex Pharma Inc.,542000,204
+PRD-010,Amlodipine 5mg (Apex),PRN-01,Apex Pharma Inc.,52000,193
+PRD-011,Vitamin C (Apex),PRN-01,Apex Pharma Inc.,228000,233
+PRD-012,Hydrochlorothiazide 25mg (Apex),PRN-01,Apex Pharma Inc.,583000,157
+PRD-013,Amoxicillin 500mg (Beacon),PRN-02,Beacon Therapeutics,250000,164
+PRD-014,Paracetamol 500mg (Beacon),PRN-02,Beacon Therapeutics,309000,51
+PRD-015,Metformin ER (Beacon),PRN-02,Beacon Therapeutics,188000,228
+PRD-016,Atorvastatin 20mg (Beacon),PRN-02,Beacon Therapeutics,457000,137
+PRD-017,Omeprazole 20mg (Beacon),PRN-02,Beacon Therapeutics,309000,89
+PRD-018,Azithromycin 500mg (Beacon),PRN-02,Beacon Therapeutics,245000,245
+PRD-019,Ibuprofen 400mg (Beacon),PRN-02,Beacon Therapeutics,369000,76
+PRD-020,Cetirizine 10mg (Beacon),PRN-02,Beacon Therapeutics,119000,147
+PRD-021,Losartan Potassium (Beacon),PRN-02,Beacon Therapeutics,124000,141
+PRD-022,Amlodipine 5mg (Beacon),PRN-02,Beacon Therapeutics,377000,204
+PRD-023,Vitamin C (Beacon),PRN-02,Beacon Therapeutics,295000,61
+PRD-024,Hydrochlorothiazide 25mg (Beacon),PRN-02,Beacon Therapeutics,495000,187
+PRD-025,Amoxicillin 500mg (Core),PRN-03,Core Biologics,152000,146
+PRD-026,Paracetamol 500mg (Core),PRN-03,Core Biologics,105000,191
+PRD-027,Metformin ER (Core),PRN-03,Core Biologics,325000,210
+PRD-028,Atorvastatin 20mg (Core),PRN-03,Core Biologics,395000,197
+PRD-029,Omeprazole 20mg (Core),PRN-03,Core Biologics,221000,230
+PRD-030,Azithromycin 500mg (Core),PRN-03,Core Biologics,96000,61
+PRD-031,Ibuprofen 400mg (Core),PRN-03,Core Biologics,258000,247
+PRD-032,Cetirizine 10mg (Core),PRN-03,Core Biologics,321000,70
+PRD-033,Losartan Potassium (Core),PRN-03,Core Biologics,263000,75
+PRD-034,Amlodipine 5mg (Core),PRN-03,Core Biologics,414000,121
+PRD-035,Vitamin C (Core),PRN-03,Core Biologics,489000,212
+PRD-036,Hydrochlorothiazide 25mg (Core),PRN-03,Core Biologics,398000,91
+PRD-037,Amoxicillin 500mg (Delta),PRN-04,Delta Healthcare,404000,140
+PRD-038,Paracetamol 500mg (Delta),PRN-04,Delta Healthcare,239000,221
+PRD-039,Metformin ER (Delta),PRN-04,Delta Healthcare,298000,229
+PRD-040,Atorvastatin 20mg (Delta),PRN-04,Delta Healthcare,98000,205
+PRD-041,Omeprazole 20mg (Delta),PRN-04,Delta Healthcare,200000,186
+PRD-042,Azithromycin 500mg (Delta),PRN-04,Delta Healthcare,275000,91
+PRD-043,Ibuprofen 400mg (Delta),PRN-04,Delta Healthcare,498000,147
+PRD-044,Cetirizine 10mg (Delta),PRN-04,Delta Healthcare,301000,213
+PRD-045,Losartan Potassium (Delta),PRN-04,Delta Healthcare,595000,106
+PRD-046,Amlodipine 5mg (Delta),PRN-04,Delta Healthcare,357000,246
+PRD-047,Vitamin C (Delta),PRN-04,Delta Healthcare,82000,108
+PRD-048,Hydrochlorothiazide 25mg (Delta),PRN-04,Delta Healthcare,57000,130
+PRD-049,Amoxicillin 500mg (Elevate),PRN-05,Elevate Lifesciences,435000,118
+PRD-050,Paracetamol 500mg (Elevate),PRN-05,Elevate Lifesciences,92000,104
+PRD-051,Metformin ER (Elevate),PRN-05,Elevate Lifesciences,347000,104
+PRD-052,Atorvastatin 20mg (Elevate),PRN-05,Elevate Lifesciences,536000,151
+PRD-053,Omeprazole 20mg (Elevate),PRN-05,Elevate Lifesciences,494000,86
+PRD-054,Azithromycin 500mg (Elevate),PRN-05,Elevate Lifesciences,296000,85
+PRD-055,Ibuprofen 400mg (Elevate),PRN-05,Elevate Lifesciences,277000,240
+PRD-056,Cetirizine 10mg (Elevate),PRN-05,Elevate Lifesciences,599000,187
+PRD-057,Losartan Potassium (Elevate),PRN-05,Elevate Lifesciences,294000,241
+PRD-058,Amlodipine 5mg (Elevate),PRN-05,Elevate Lifesciences,463000,199
+PRD-059,Vitamin C (Elevate),PRN-05,Elevate Lifesciences,433000,142
+PRD-060,Hydrochlorothiazide 25mg (Elevate),PRN-05,Elevate Lifesciences,249000,85
+PRD-061,Amoxicillin 500mg (Frontier),PRN-06,Frontier Meds,546000,176
+PRD-062,Paracetamol 500mg (Frontier),PRN-06,Frontier Meds,118000,243
+PRD-063,Metformin ER (Frontier),PRN-06,Frontier Meds,73000,78
+PRD-064,Atorvastatin 20mg (Frontier),PRN-06,Frontier Meds,181000,210
+PRD-065,Omeprazole 20mg (Frontier),PRN-06,Frontier Meds,188000,224
+PRD-066,Azithromycin 500mg (Frontier),PRN-06,Frontier Meds,457000,202
+PRD-067,Ibuprofen 400mg (Frontier),PRN-06,Frontier Meds,90000,148
+PRD-068,Cetirizine 10mg (Frontier),PRN-06,Frontier Meds,415000,202
+PRD-069,Losartan Potassium (Frontier),PRN-06,Frontier Meds,504000,185
+PRD-070,Amlodipine 5mg (Frontier),PRN-06,Frontier Meds,282000,191
+PRD-071,Vitamin C (Frontier),PRN-06,Frontier Meds,36000,224
+PRD-072,Hydrochlorothiazide 25mg (Frontier),PRN-06,Frontier Meds,142000,224
+PRD-073,Amoxicillin 500mg (Genesis),PRN-07,Genesis Organics,574000,242
+PRD-074,Paracetamol 500mg (Genesis),PRN-07,Genesis Organics,298000,246
+PRD-075,Metformin ER (Genesis),PRN-07,Genesis Organics,373000,78
+PRD-076,Atorvastatin 20mg (Genesis),PRN-07,Genesis Organics,325000,161
+PRD-077,Omeprazole 20mg (Genesis),PRN-07,Genesis Organics,186000,166
+PRD-078,Azithromycin 500mg (Genesis),PRN-07,Genesis Organics,28000,234
+PRD-079,Ibuprofen 400mg (Genesis),PRN-07,Genesis Organics,294000,178
+PRD-080,Cetirizine 10mg (Genesis),PRN-07,Genesis Organics,207000,179
+PRD-081,Losartan Potassium (Genesis),PRN-07,Genesis Organics,133000,210
+PRD-082,Amlodipine 5mg (Genesis),PRN-07,Genesis Organics,330000,213
+PRD-083,Vitamin C (Genesis),PRN-07,Genesis Organics,544000,205
+PRD-084,Hydrochlorothiazide 25mg (Genesis),PRN-07,Genesis Organics,228000,89
+PRD-085,Amoxicillin 500mg (Horizon),PRN-08,Horizon Pharma,407000,245
+PRD-086,Paracetamol 500mg (Horizon),PRN-08,Horizon Pharma,190000,188
+PRD-087,Metformin ER (Horizon),PRN-08,Horizon Pharma,568000,50
+PRD-088,Atorvastatin 20mg (Horizon),PRN-08,Horizon Pharma,356000,175
+PRD-089,Omeprazole 20mg (Horizon),PRN-08,Horizon Pharma,44000,78
+PRD-090,Azithromycin 500mg (Horizon),PRN-08,Horizon Pharma,396000,128
+PRD-091,Ibuprofen 400mg (Horizon),PRN-08,Horizon Pharma,270000,64
+PRD-092,Cetirizine 10mg (Horizon),PRN-08,Horizon Pharma,271000,195
+PRD-093,Losartan Potassium (Horizon),PRN-08,Horizon Pharma,105000,71
+PRD-094,Amlodipine 5mg (Horizon),PRN-08,Horizon Pharma,522000,67
+PRD-095,Vitamin C (Horizon),PRN-08,Horizon Pharma,570000,246
+PRD-096,Hydrochlorothiazide 25mg (Horizon),PRN-08,Horizon Pharma,153000,82
+PRD-097,Amoxicillin 500mg (Infinity),PRN-09,Infinity Biotech,511000,190
+PRD-098,Paracetamol 500mg (Infinity),PRN-09,Infinity Biotech,194000,117
+PRD-099,Metformin ER (Infinity),PRN-09,Infinity Biotech,565000,205
+PRD-100,Atorvastatin 20mg (Infinity),PRN-09,Infinity Biotech,458000,104
+PRD-101,Omeprazole 20mg (Infinity),PRN-09,Infinity Biotech,577000,243
+PRD-102,Azithromycin 500mg (Infinity),PRN-09,Infinity Biotech,230000,232
+PRD-103,Ibuprofen 400mg (Infinity),PRN-09,Infinity Biotech,344000,152
+PRD-104,Cetirizine 10mg (Infinity),PRN-09,Infinity Biotech,407000,162
+PRD-105,Losartan Potassium (Infinity),PRN-09,Infinity Biotech,554000,165
+PRD-106,Amlodipine 5mg (Infinity),PRN-09,Infinity Biotech,148000,113
+PRD-107,Vitamin C (Infinity),PRN-09,Infinity Biotech,255000,66
+PRD-108,Hydrochlorothiazide 25mg (Infinity),PRN-09,Infinity Biotech,371000,55
+PRD-109,Amoxicillin 500mg (Janus),PRN-10,Janus Pharmaceuticals,592000,108
+PRD-110,Paracetamol 500mg (Janus),PRN-10,Janus Pharmaceuticals,250000,51
+PRD-111,Metformin ER (Janus),PRN-10,Janus Pharmaceuticals,97000,231
+PRD-112,Atorvastatin 20mg (Janus),PRN-10,Janus Pharmaceuticals,85000,108
+PRD-113,Omeprazole 20mg (Janus),PRN-10,Janus Pharmaceuticals,94000,58
+PRD-114,Azithromycin 500mg (Janus),PRN-10,Janus Pharmaceuticals,363000,68
+PRD-115,Ibuprofen 400mg (Janus),PRN-10,Janus Pharmaceuticals,551000,110
+PRD-116,Cetirizine 10mg (Janus),PRN-10,Janus Pharmaceuticals,310000,221
+PRD-117,Losartan Potassium (Janus),PRN-10,Janus Pharmaceuticals,522000,104
+PRD-118,Amlodipine 5mg (Janus),PRN-10,Janus Pharmaceuticals,577000,83
+PRD-119,Vitamin C (Janus),PRN-10,Janus Pharmaceuticals,509000,112
+PRD-120,Hydrochlorothiazide 25mg (Janus),PRN-10,Janus Pharmaceuticals,509000,154
