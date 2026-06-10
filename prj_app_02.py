@@ -70,12 +70,12 @@ with tab1:
             
             <p style="text-align:justify;">We also have <b>Master_Product_Lot</b> data, this is the table to inform the batch number of products. It contains <b>Lot_ID</b> as the batch 
             identifier, <b>Product_ID</b> as the product identifier, and <b>Expired_Date</b>. In this case, there is only one expired date for one lot ID.</p>
-            ''')
+            
+            <p style="text-align:justify;">Finally we have <b>Master_Product</b> data, this is the tabel to store detail information about product. It contains
+            <b>Product_ID</b> and <b>Product_Name</b> as the identity of product, <b>Principal_ID</b> and <b>Principal_Name</b> as the identity of the manufacturer, also <b>Product_Value</b>
+            and <b>Product_Volume_cm3</b> as the measurement for each product.</p>''')
     with col2:
         insert_icon(path, "whs_relation_model.png")
-    st.html('''<p style="text-align:justify;">Finally we have <b>Master_Product</b> data, this is the tabel to store detail information about product. It contains
-        <b>Product_ID</b> and <b>Product_Name</b> as the identity of product, <b>Principal_ID</b> and <b>Principal_Name</b> as the identity of the manufacturer, also <b>Product_Value</b>
-        and <b>Product_Volume_cm3</b> as the measurement for each product.</p>''')
     
     st.subheader("Special KPI")
     st.html('''<p style="text-align:justify;">There is a "special KPI" used in the dashboard. This KPI is common in the term of Supply Chain Management (SCM), it is <i>Day of Inventory</i> 
