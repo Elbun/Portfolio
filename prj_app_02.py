@@ -14,14 +14,15 @@ print("Start printing")
 st.set_page_config(layout="wide")
 
 #----------------------------- Set folder path
-# path = "B. Project/whs_monitor_data/"
-path = "whs_monitor_data/"
+path = "B. Project/whs_monitor_data/"
+# path = "whs_monitor_data/"
 
 #----------------------------- Read data file
 df_master_branch = pd.read_csv(path+"master_warehouse_branches.csv", sep=",")
 df_master_lotno = pd.read_csv(path+"master_product_batches.csv", sep=",")
 df_master_product = pd.read_csv(path+"master_products.csv", sep=",")
 df_master_product = df_master_product.merge(df_master_lotno, on="Product_ID", how="inner")
+df_master_product["Principal_ID_Name"] = df_master_product["Principal_ID"] + " / " + df_master_product["Principal_Name"]
 
 df_inventory = pd.read_csv(path+"warehouse_stock_inventory_2025.csv", sep=",")
 df_inventory["Month_Name"] = pd.to_datetime(df_inventory["Stock_Date"],format="%m/%d/%Y").dt.strftime("%b")
@@ -29,6 +30,7 @@ df_sales = pd.read_csv(path+"warehouse_sales_2025.csv", sep=",")
 df_sales["Month_Num"] = pd.to_datetime(df_sales["Sales_Date"],format="%Y-%m").dt.strftime("%m").astype(int)
 
 branch_list = df_master_branch["Branch_ID"].unique()
+principal_list = df_master_product["Principal_ID_Name"].unique()
 product_list = df_master_product["Product_ID"].unique()
 year_list = 2025
 month_list = ["All Month"]
@@ -112,7 +114,7 @@ with tab1:
 
 #----------------------------- Tab 2 : Warehouse Monitoring Dashboard
 with tab2:
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
         selected_year = st.selectbox(label="Year", placeholder="Select a year...", options=year_list, index=0)
         selected_month = st.selectbox(label="Month", placeholder="Select a month...", options=month_list, index=0)
@@ -123,18 +125,38 @@ with tab2:
         elif(selected_month=="All Month"):
             df_inventory = df_inventory[df_inventory["Month_Name"].isin(["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])]
             df_sales = df_sales[df_sales["Month_Num"]>=datetime.datetime.strptime("Jul", "%b").month-2]
-    with col2:
         selected_branch = st.selectbox(label="Branch", placeholder="Select a branch...", options=branch_list, index=None)
         if(selected_branch!=None):
             df_master_branch = df_master_branch[df_master_branch["Branch_ID"]==selected_branch]
             df_inventory = df_inventory[df_inventory["Branch_ID"]==selected_branch]
             df_sales = df_sales[df_sales["Branch_ID"]==selected_branch]
-        selected_product = st.selectbox(label="Product", placeholder="Select a product...", options=product_list, index=None)
-        if(selected_product!=None):
-            df_master_product = df_master_product[df_master_product["Product_ID"]==selected_product]
-            df_master_lotno = df_master_lotno[df_master_lotno["Product_ID"]==selected_product]
-            batch_list = df_master_lotno["Lot_ID"].unique()
+        selected_principal = st.selectbox(label="Principal", placeholder="Select a principal...", options=principal_list, index=None)
+        if(selected_principal!=None):
+            df_master_product = df_master_product[df_master_product["Principal_ID_Name"]==selected_principal]
+            batch_list = df_master_product["Lot_ID"].unique()
             df_inventory = df_inventory[df_inventory["Lot_ID"].isin(batch_list)]
             df_sales = df_sales[df_sales["Lot_ID"].isin(batch_list)]
+    with col2:
+        st.metric("Company Branch", df_master_branch["Branch_ID"].nunique(), border=True)
+        st.metric("Principal", df_master_product["Principal_ID"].nunique(), border=True)
+        st.metric("Product", df_master_product["Product_ID"].nunique(), border=True)
+    with col3:
+        df_inventory_product = df_inventory.merge(df_master_product, on="Lot_ID", how="inner")
+        if(selected_month=="All Month"):
+            df_inventory_product = df_inventory_product[df_inventory_product["Month_Name"]=="Dec"]
+        eom_product_qty = df_inventory_product["Product_Qty"].sum()
+        st.metric("Inventory Quantity", f"{eom_product_qty:,}", border=True)
+        df_inventory_product["Inventory_Value"] = df_inventory_product["Product_Qty"] * df_inventory_product["Product_Value"]
+        eom_product_value = df_inventory_product["Inventory_Value"].sum()
+        st.metric("Inventory Value", f"{eom_product_value:,}", border=True)
+        df_inventory_product["Inventory_Volume"] = df_inventory_product["Product_Qty"] * df_inventory_product["Product_Volume_cm3"] / 1000000
+        eom_product_volume = df_inventory_product["Inventory_Volume"].sum()
+        st.metric("Inventory Volume (m3)", f"{round(eom_product_volume,2):2,}", border=True)
+    with col4:
+        whs_capacity = df_master_branch["Branch_Capacity_m3"].sum()
+        st.metric("Warehouse Capacity (m3)", f"{round(whs_capacity,0):2,}", border=True)
+        whs_capacity_usage = eom_product_volume/whs_capacity*100
+        st.metric("Warehouse Capacity Usage", f"{round(whs_capacity_usage,2):2,} %", border=True)
+
 
 print("End printing")
