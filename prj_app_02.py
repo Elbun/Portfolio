@@ -5,7 +5,7 @@ import pydeck as pdk
 import altair as alt
 import calendar
 import datetime
-from lib_function import insert_icon, sales_horizontal_bar_chart
+from lib_function import insert_icon, line_chart_inventory
 
 print("-----------------------------------------------------------------------------------------------------------------------------------------")
 print("Start printing")
@@ -14,8 +14,8 @@ print("Start printing")
 st.set_page_config(layout="wide")
 
 #----------------------------- Set folder path
-# path = "B. Project/whs_monitor_data/"
-path = "whs_monitor_data/"
+path = "B. Project/whs_monitor_data/"
+# path = "whs_monitor_data/"
 
 #----------------------------- Read data file
 df_master_branch = pd.read_csv(path+"master_warehouse_branches.csv", sep=",")
@@ -26,6 +26,7 @@ df_master_product["Principal_ID_Name"] = df_master_product["Principal_ID"] + " /
 
 df_inventory = pd.read_csv(path+"warehouse_stock_inventory_2025.csv", sep=",")
 df_inventory["Month_Name"] = pd.to_datetime(df_inventory["Stock_Date"],format="%m/%d/%Y").dt.strftime("%b")
+df_inventory["Month_Num"] = pd.to_datetime(df_inventory["Stock_Date"],format="%m/%d/%Y").dt.strftime("%m").astype(int)
 df_sales = pd.read_csv(path+"warehouse_sales_2025.csv", sep=",")
 df_sales["Month_Num"] = pd.to_datetime(df_sales["Sales_Date"],format="%Y-%m").dt.strftime("%m").astype(int)
 
@@ -37,7 +38,7 @@ month_list = ["All Month"]
 for x in range (0,6):
     month_list.append(calendar.month_abbr[x+7])
 
-tab1, tab2 = st.tabs(["Project Description","Warehouse Monitoring Dashboard"])
+tab1, tab2, tab3 = st.tabs(["Project Description","Warehouse Monitoring Dashboard","Warehouse & Inventory Analysis"])
 #----------------------------- Tab 1 : Project Description
 with tab1:
     st.header("Introduction")
@@ -114,49 +115,132 @@ with tab1:
 
 #----------------------------- Tab 2 : Warehouse Monitoring Dashboard
 with tab2:
+    # KPI card
     col1, col2, col3, col4 = st.columns(4)
+    df_inventory_kpi = df_inventory.copy()
+    df_sales_kpi = df_sales.copy()
     with col1:
         selected_year = st.selectbox(label="Year", placeholder="Select a year...", options=year_list, index=0)
         selected_month = st.selectbox(label="Month", placeholder="Select a month...", options=month_list, index=0)
         if(selected_month!="All Month"):
-            df_inventory = df_inventory[df_inventory["Month_Name"]==selected_month]
-            df_sales = df_sales[df_sales["Month_Num"]>=datetime.datetime.strptime(selected_month, "%b").month-2]
-            df_sales = df_sales[df_sales["Month_Num"]<=datetime.datetime.strptime(selected_month, "%b").month]
+            month = selected_month
         elif(selected_month=="All Month"):
-            df_inventory = df_inventory[df_inventory["Month_Name"].isin(["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])]
-            df_sales = df_sales[df_sales["Month_Num"]>=datetime.datetime.strptime("Jul", "%b").month-2]
+            month = "Dec"
+        df_inventory_kpi = df_inventory_kpi[df_inventory_kpi["Month_Name"]==month]
+        df_sales_kpi = df_sales_kpi[df_sales_kpi["Month_Num"]>=datetime.datetime.strptime(month, "%b").month-2]
+        df_sales_kpi = df_sales_kpi[df_sales_kpi["Month_Num"]<=datetime.datetime.strptime(month, "%b").month]
+
         selected_branch = st.selectbox(label="Branch", placeholder="Select a branch...", options=branch_list, index=None)
         if(selected_branch!=None):
             df_master_branch = df_master_branch[df_master_branch["Branch_ID"]==selected_branch]
-            df_inventory = df_inventory[df_inventory["Branch_ID"]==selected_branch]
-            df_sales = df_sales[df_sales["Branch_ID"]==selected_branch]
+            df_inventory_kpi = df_inventory_kpi[df_inventory_kpi["Branch_ID"]==selected_branch]
+            df_sales_kpi = df_sales_kpi[df_sales_kpi["Branch_ID"]==selected_branch]
+
         selected_principal = st.selectbox(label="Principal", placeholder="Select a principal...", options=principal_list, index=None)
         if(selected_principal!=None):
             df_master_product = df_master_product[df_master_product["Principal_ID_Name"]==selected_principal]
             batch_list = df_master_product["Lot_ID"].unique()
-            df_inventory = df_inventory[df_inventory["Lot_ID"].isin(batch_list)]
-            df_sales = df_sales[df_sales["Lot_ID"].isin(batch_list)]
+            df_inventory_kpi = df_inventory_kpi[df_inventory_kpi["Lot_ID"].isin(batch_list)]
+            df_sales_kpi = df_sales_kpi[df_sales_kpi["Lot_ID"].isin(batch_list)]
+
     with col2:
         st.metric("Company Branch", df_master_branch["Branch_ID"].nunique(), border=True)
         st.metric("Principal", df_master_product["Principal_ID"].nunique(), border=True)
         st.metric("Product", df_master_product["Product_ID"].nunique(), border=True)
+
     with col3:
-        df_inventory_product = df_inventory.merge(df_master_product, on="Lot_ID", how="inner")
-        if(selected_month=="All Month"):
-            df_inventory_product = df_inventory_product[df_inventory_product["Month_Name"]=="Dec"]
-        eom_product_qty = df_inventory_product["Product_Qty"].sum()
+        df_inventory_product_kpi = df_inventory_kpi.merge(df_master_product, on="Lot_ID", how="inner")
+        eom_product_qty = df_inventory_product_kpi["Product_Qty"].sum()
         st.metric("Inventory Quantity", f"{eom_product_qty:,}", border=True)
-        df_inventory_product["Inventory_Value"] = df_inventory_product["Product_Qty"] * df_inventory_product["Product_Value"]
-        eom_product_value = df_inventory_product["Inventory_Value"].sum()
+
+        df_inventory_product_kpi["Inventory_Value"] = df_inventory_product_kpi["Product_Qty"] * df_inventory_product_kpi["Product_Value"]
+        eom_product_value = df_inventory_product_kpi["Inventory_Value"].sum()
         st.metric("Inventory Value", f"{eom_product_value:,}", border=True)
-        df_inventory_product["Inventory_Volume"] = df_inventory_product["Product_Qty"] * df_inventory_product["Product_Volume_cm3"] / 1000000
-        eom_product_volume = df_inventory_product["Inventory_Volume"].sum()
+
+        df_inventory_product_kpi["Inventory_Volume"] = df_inventory_product_kpi["Product_Qty"] * df_inventory_product_kpi["Product_Volume_cm3"] / 1000000
+        eom_product_volume = df_inventory_product_kpi["Inventory_Volume"].sum()
         st.metric("Inventory Volume (m3)", f"{round(eom_product_volume,2):2,}", border=True)
+
     with col4:
         whs_capacity = df_master_branch["Branch_Capacity_m3"].sum()
         st.metric("Warehouse Capacity (m3)", f"{round(whs_capacity,0):2,}", border=True)
+
         whs_capacity_usage = eom_product_volume/whs_capacity*100
         st.metric("Warehouse Capacity Usage", f"{round(whs_capacity_usage,2):2,} %", border=True)
+        
+        avg_whs_sales = df_sales_kpi["Sales_Value"].sum()/3
+        whs_doi = eom_product_value / avg_whs_sales * 30
+        st.metric("Warehouse DOI (days)", f"{round(whs_doi,2):2,}", border=True)
+
+    # Transaction data join master data
+    df_inventory = df_inventory.merge(df_master_product, on="Lot_ID", how="inner")
+    df_inventory = df_inventory.merge(df_master_branch, on="Branch_ID", how="inner")
+    df_inventory["Inventory_Value"] = df_inventory["Product_Qty"] * df_inventory["Product_Value"]
+    df_inventory["Inventory_Volume_m3"] = df_inventory["Product_Qty"] * df_inventory["Product_Volume_cm3"] / 1000000
+    df_inventory["Stock_Date"] = pd.to_datetime(df_inventory['Stock_Date'], errors='coerce')
+    df_inventory["Period"] = df_inventory["Stock_Date"].dt.strftime("%b %Y").astype(str)
+    df_inventory["Date_YYYYmm"] = df_inventory["Stock_Date"].dt.strftime("%Y%m").astype(int)
+
+    df_sales = df_sales.merge(df_master_product, on="Lot_ID", how="inner")
+    df_sales = df_sales.merge(df_master_branch, on="Branch_ID", how="inner")
+
+    # As of month dataframe for sales and inventory
+    base_data = np.arange(1, 13)
+    df_as_of_month = None
+    df_as_of_month_sales = None
+    df_as_of_month_inventory = None
+    for i in range (0,3):
+        df_as_of_month_data = pd.DataFrame({
+            'Month_Num': base_data,
+            'As_of_Month_Num': base_data + i
+        })
+        df_as_of_month_sales = pd.concat([df_as_of_month_sales, df_as_of_month_data], ignore_index=True).sort_values(by=["As_of_Month_Num","Month_Num"], ascending=[False,False])
+        df_as_of_month_sales = df_as_of_month_sales[df_as_of_month_sales["As_of_Month_Num"]<=12]
+        df_as_of_month_sales["Type"] = "Sales"
+    for i in range (0,1):
+        df_as_of_month_data = pd.DataFrame({
+            'Month_Num': base_data,
+            'As_of_Month_Num': base_data + i
+        })
+        df_as_of_month_inventory = pd.concat([df_as_of_month_inventory, df_as_of_month_data], ignore_index=True).sort_values(by=["As_of_Month_Num","Month_Num"], ascending=[False,False])
+        df_as_of_month_inventory = df_as_of_month_inventory[df_as_of_month_inventory["As_of_Month_Num"]<=12]
+        df_as_of_month_inventory["Type"] = "Inventory"
+        
+    df_as_of_month = pd.concat([df_as_of_month_sales, df_as_of_month_inventory], ignore_index=True).sort_values(by=["Type","As_of_Month_Num","Month_Num"], ascending=[True,False,False])
+    df_as_of_month["As_of_EOM"] = pd.to_datetime(dict(year=selected_year, month=df_as_of_month['As_of_Month_Num'], day=1)) + pd.offsets.MonthEnd(0)
+    df_as_of_month["As_of_Month_Name"] = df_as_of_month["As_of_EOM"].dt.strftime("%b").astype(str)
+    df_as_of_month["As_of_Period"] = df_as_of_month["As_of_EOM"].dt.strftime("%b %Y").astype(str)
+    df_as_of_month["As_of_Date_YYYYmm"] = df_as_of_month["As_of_EOM"].dt.strftime("%Y%m").astype(int)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        # Inventory value per month
+        df_chart1 = df_inventory.copy()
+        df_chart1 = df_chart1.groupby(["Month_Name","Period","Date_YYYYmm"])["Inventory_Value"].sum().reset_index()
+        line_chart_inventory(df_chart1, "Period", "Inventory_Value", "Inventory Value", "Date_YYYYmm", "Inventory Value")
+
+        # Inventory volume per month
+        df_chart3 = df_inventory.copy()
+        df_chart3 = df_chart3.groupby(["Month_Name","Period","Date_YYYYmm"])["Inventory_Volume_m3"].sum().reset_index()
+        line_chart_inventory(df_chart3, "Period", "Inventory_Volume_m3", "Inventory Volume (m3)", "Date_YYYYmm", "Inventory Volume (m3)")
+
+        # DOI per month
+        df_chart2_inventory = df_inventory.copy()
+        df_chart2_inventory = df_chart2_inventory.merge(df_as_of_month[df_as_of_month["Type"]=="Inventory"], on="Month_Num", how="inner")
+        df_chart2_inventory = df_chart2_inventory.groupby(["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm","Type"])["Inventory_Value"].sum().reset_index()
+        df_chart2_sales = df_sales.copy()
+        df_chart2_sales = df_chart2_sales.merge(df_as_of_month[df_as_of_month["Type"]=="Sales"], on="Month_Num", how="inner")
+        df_chart2_sales = df_chart2_sales.groupby(["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm","Type"])["Sales_Value"].sum().reset_index()
+        df_chart2 = df_chart2_inventory.merge(df_chart2_sales, on=["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm"], how="inner")
+        df_chart2["DOI"] = df_chart2["Inventory_Value"] / (df_chart2["Sales_Value"]/3) * 30
+        line_chart_inventory(df_chart2, "As_of_Period", "DOI", "Day of Inventory", "As_of_Date_YYYYmm", "DOI")
+
+
+#----------------------------- Tab 3 : Warehouse & Inventory Analysis
+with tab3:
+    selected_branch2 = st.selectbox(label="Branch", placeholder="Select a branch...", options=branch_list, index=None, key=1)
+    st.write(df_inventory)
+        
 
 
 print("End printing")

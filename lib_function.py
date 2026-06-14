@@ -123,3 +123,52 @@ def sales_horizontal_bar_chart(df, chart_title, x, y, variable, color, subtitle_
             height=500
         )
     st.altair_chart(bar_chart1, width=450)
+
+
+def line_chart_inventory(df,x,y,title,x_sort,y_tooltip):
+    # Show data in line chart
+    line_chart = alt.Chart(
+            df,
+            title=alt.Title(f"{title}",
+                fontSize=20,
+                anchor="start",
+                offset=0)
+    ).mark_line(point=True, size=3).encode(
+        x=alt.X(f"{x}:N", 
+                sort=alt.EncodingSortField(field=f"{x_sort}", order="ascending")
+            ).axis(
+                title=None,
+                labelAngle=0,
+                labelFontWeight="bold"  
+            ),
+        y=alt.Y(f"{y}:Q").axis(
+            title=None,
+            labelFontWeight="bold"
+        ),
+        # color=alt.Color("Sales Category:N",
+        #     legend=alt.Legend(
+        #         orient="top",
+        #         title=None)
+        #     ),
+        # color=alt.Color(
+        #     f"Hex_Code:N",
+        #     scale=None,
+        #     legend=alt.Legend(
+        #         orient="top",
+        #         title=None)
+        #     ),
+        tooltip=[x,
+            alt.Tooltip(f"{y}:Q", title=f"{y_tooltip}", format=",.0f")]
+    ).configure_axis(
+        domainColor="black",
+        domainWidth=10,
+        gridColor="black",
+        gridWidth=2,
+        gridOpacity=0.03
+    ).configure_point(
+        size=100
+    ).properties(
+        height=500,
+        width=850
+    )
+    st.altair_chart(line_chart)
