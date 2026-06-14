@@ -125,14 +125,19 @@ def sales_horizontal_bar_chart(df, chart_title, x, y, variable, color, subtitle_
     st.altair_chart(bar_chart1, width=450)
 
 
-def line_chart_inventory(df,x,y,title,x_sort,y_tooltip):
+def line_chart_inventory(df,x,y,title,subtitle_text,x_sort,y_tooltip,):
+    if y_tooltip=="DOI":
+        num_format = ",.2f"
+    else:
+        num_format = ",.0f"
     # Show data in line chart
     line_chart = alt.Chart(
             df,
             title=alt.Title(f"{title}",
+                subtitle=f"{subtitle_text}",    
                 fontSize=20,
                 anchor="start",
-                offset=0)
+                offset=20)
     ).mark_line(point=True, size=3).encode(
         x=alt.X(f"{x}:N", 
                 sort=alt.EncodingSortField(field=f"{x_sort}", order="ascending")
@@ -158,7 +163,7 @@ def line_chart_inventory(df,x,y,title,x_sort,y_tooltip):
         #         title=None)
         #     ),
         tooltip=[x,
-            alt.Tooltip(f"{y}:Q", title=f"{y_tooltip}", format=",.0f")]
+            alt.Tooltip(f"{y}:Q", title=f"{y_tooltip}", format=f"{num_format}")]
     ).configure_axis(
         domainColor="black",
         domainWidth=10,
@@ -168,7 +173,54 @@ def line_chart_inventory(df,x,y,title,x_sort,y_tooltip):
     ).configure_point(
         size=100
     ).properties(
-        height=500,
-        width=850
+        height=300
     )
-    st.altair_chart(line_chart)
+    st.altair_chart(line_chart, width=700)
+
+def bar_chart_inventory(df,chart_title,subtitle_text,x,y):
+    if chart_title=="Day of Inventory":
+        num_format = ",.2f"
+    else:
+        num_format = ",.0f"
+    bar_chart1 = alt.Chart(
+        df,
+        title=alt.Title(f"{chart_title}",
+            subtitle=f"{subtitle_text}",
+            fontSize=20,
+            anchor="start",
+            offset=20)
+        ).mark_bar().encode(
+            x=alt.X(f"{x}:N", 
+                    sort=alt.EncodingSortField(field=f"{y}", order="descending")
+                ).axis(
+                    title=None,
+                    labelAngle=0,
+                    labelFontWeight="bold"  
+                ),
+            y=alt.Y(f"{y}:Q"
+                ).axis(
+                    title=None,
+                    labelFontWeight="bold"
+                ),
+            # color=alt.Color(
+            #     f"{color}:N",
+            #     scale=None,
+            #     legend=alt.Legend(
+            #         orient="top",
+            #         title=None)
+            #     ),
+            # yOffset=f"{variable}",
+            tooltip=[f"{x}",
+                    alt.Tooltip(f"{y}:Q", title="Amount", format=f"{num_format}")]
+        ).configure_legend(
+            strokeColor="gray"
+        ).configure_axis(
+            domainColor="black",
+            domainWidth=10,
+            gridColor="black",
+            gridWidth=2,
+            gridOpacity=0.03
+        ).properties(
+            height=300
+        )
+    st.altair_chart(bar_chart1, width=700)

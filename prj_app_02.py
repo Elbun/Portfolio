@@ -5,7 +5,7 @@ import pydeck as pdk
 import altair as alt
 import calendar
 import datetime
-from lib_function import insert_icon, line_chart_inventory
+from lib_function import insert_icon, line_chart_inventory, bar_chart_inventory
 
 print("-----------------------------------------------------------------------------------------------------------------------------------------")
 print("Start printing")
@@ -14,8 +14,8 @@ print("Start printing")
 st.set_page_config(layout="wide")
 
 #----------------------------- Set folder path
-# path = "B. Project/whs_monitor_data/"
-path = "whs_monitor_data/"
+path = "B. Project/whs_monitor_data/"
+# path = "whs_monitor_data/"
 
 #----------------------------- Read data file
 df_master_branch = pd.read_csv(path+"master_warehouse_branches.csv", sep=",")
@@ -170,7 +170,7 @@ with tab2:
         
         avg_whs_sales = df_sales_kpi["Sales_Value"].sum()/3
         whs_doi = eom_product_value / avg_whs_sales * 30
-        st.metric("Warehouse DOI (days)", f"{round(whs_doi,2):2,}", border=True)
+        st.metric("DOI (days)", f"{round(whs_doi,2):2,}", border=True)
 
     # Transaction data join master data
     df_inventory = df_inventory.merge(df_master_product, on="Lot_ID", how="inner")
@@ -217,12 +217,12 @@ with tab2:
         # Inventory value per month
         df_chart1 = df_inventory.copy()
         df_chart1 = df_chart1.groupby(["Month_Name","Period","Date_YYYYmm"])["Inventory_Value"].sum().reset_index()
-        line_chart_inventory(df_chart1, "Period", "Inventory_Value", "Inventory Value", "Date_YYYYmm", "Inventory Value")
+        line_chart_inventory(df_chart1, "Month_Name", "Inventory_Value", "Inventory Value", "", "Date_YYYYmm", "Inventory Value")
 
         # Inventory volume per month
         df_chart3 = df_inventory.copy()
         df_chart3 = df_chart3.groupby(["Month_Name","Period","Date_YYYYmm"])["Inventory_Volume_m3"].sum().reset_index()
-        line_chart_inventory(df_chart3, "Period", "Inventory_Volume_m3", "Inventory Volume (m3)", "Date_YYYYmm", "Inventory Volume (m3)")
+        line_chart_inventory(df_chart3, "Month_Name", "Inventory_Volume_m3", "Inventory Volume (m3)", "", "Date_YYYYmm", "Inventory Volume (m3)")
 
         # DOI per month
         df_chart2_inventory = df_inventory.copy()
@@ -233,8 +233,28 @@ with tab2:
         df_chart2_sales = df_chart2_sales.groupby(["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm","Type"])["Sales_Value"].sum().reset_index()
         df_chart2 = df_chart2_inventory.merge(df_chart2_sales, on=["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm"], how="inner")
         df_chart2["DOI"] = df_chart2["Inventory_Value"] / (df_chart2["Sales_Value"]/3) * 30
-        line_chart_inventory(df_chart2, "As_of_Period", "DOI", "Day of Inventory", "As_of_Date_YYYYmm", "DOI")
-
+        line_chart_inventory(df_chart2, "As_of_Month_Name", "DOI", "Day of Inventory", "", "As_of_Date_YYYYmm", "DOI")
+    
+    with col2:
+        # Inventory value per principal
+        df_chart2 = df_inventory.copy()
+        df_chart2 = df_chart2.groupby(["Principal_ID"])["Inventory_Value"].sum().reset_index()
+        bar_chart_inventory(df_chart2, "Inventory Value by Principal", "", "Principal_ID", "Inventory_Value")
+        
+        # Inventory volume per principal
+        df_chart3 = df_inventory.copy()
+        df_chart3 = df_chart3.groupby(["Principal_ID"])["Inventory_Volume_m3"].sum().reset_index()
+        bar_chart_inventory(df_chart3, "Inventory Volume (m3) by Principal", "", "Principal_ID", "Inventory_Volume_m3")
+        
+        # DOI per principal
+        df_inventory_product_kpi = df_inventory_product_kpi.merge(df_as_of_month[df_as_of_month["Type"]=="Inventory"], on="Month_Num", how="inner")
+        df_inventory_product_kpi = df_inventory_product_kpi.groupby(["Principal_ID","As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm","Type"])["Inventory_Value"].sum().reset_index()
+        df_sales_kpi = df_sales_kpi.merge(df_master_product, on="Lot_ID", how="inner")
+        df_sales_kpi = df_sales_kpi.merge(df_as_of_month[df_as_of_month["Type"]=="Sales"], on="Month_Num", how="inner")
+        df_sales_kpi = df_sales_kpi.groupby(["Principal_ID","As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm","Type"])["Sales_Value"].sum().reset_index()
+        df_chart4 = df_inventory_product_kpi.merge(df_sales_kpi, on=["Principal_ID","As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm"], how="inner")
+        df_chart4["DOI"] = df_chart4["Inventory_Value"] / (df_chart4["Sales_Value"]/3) * 30
+        bar_chart_inventory(df_chart4, "Day of Inventory", "", "Principal_ID", "DOI")
 
 #----------------------------- Tab 3 : Warehouse & Inventory Analysis
 with tab3:
