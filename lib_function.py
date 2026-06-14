@@ -210,7 +210,7 @@ def bar_chart_inventory(df,chart_title,subtitle_text,x,y):
             #         title=None)
             #     ),
             # yOffset=f"{variable}",
-            tooltip=[f"{x}",
+            tooltip=[f"{x}_Name",
                     alt.Tooltip(f"{y}:Q", title="Amount", format=f"{num_format}")]
         ).configure_legend(
             strokeColor="gray"
