@@ -173,7 +173,7 @@ def line_chart_inventory(df,x,y,title,subtitle_text,x_sort,y_tooltip,):
     ).configure_point(
         size=100
     ).properties(
-        height=300
+        height=350
     )
     st.altair_chart(line_chart, width=700)
 
@@ -221,6 +221,81 @@ def bar_chart_inventory(df,chart_title,subtitle_text,x,y):
             gridWidth=2,
             gridOpacity=0.03
         ).properties(
-            height=300
+            height=350
         )
     st.altair_chart(bar_chart1, width=700)
+
+def line_chart_inventory_with_capacity(df,x,y,title,subtitle_text,x_sort,y_tooltip,df_capacity,capacity_col):
+    if y_tooltip=="DOI":
+        num_format = ",.2f"
+    else:
+        num_format = ",.2%"
+    # --- LAYER 1: Inventory Line Chart (using df) ---
+    line_layer = (
+        alt.Chart(df)
+        .mark_line(point=True, size=3)
+        .encode(
+            x=alt.X(
+                f"{x}:N",
+                sort=alt.EncodingSortField(
+                    field=f"{x_sort}", order="ascending"
+                ),
+            ).axis(title=None, labelAngle=0, labelFontWeight="bold"),
+            y=alt.Y(f"{y}:Q").axis(title=None, labelFontWeight="bold"),
+            tooltip=[
+                x,
+                alt.Tooltip(
+                    f"{y}:Q", title=f"{y_tooltip}", format=f"{num_format}"
+                ),
+            ],
+        )
+    )
+    # --- LAYER 2: Capacity Chart (using df_capacity) ---
+    # Example: A dashed red line showing capacity/threshold
+    capacity_layer = (
+        alt.Chart(df_capacity)
+        .mark_line(
+            strokeDash=[4, 4], size=2, color="red"
+        )  # Or .mark_line(), .mark_bar(), etc.
+        .encode(
+            x=alt.X(
+                f"{x}:N",
+                sort=alt.EncodingSortField(
+                    field=f"{x_sort}", order="ascending"
+                ),
+            ).axis(title=None, labelAngle=0, labelFontWeight="bold"),
+            y=alt.Y(f"{capacity_col}:Q"),  # Y maps to the capacity data
+            tooltip=[
+                x,
+                alt.Tooltip(
+                    f"{capacity_col}:Q",
+                    title="Capacity",
+                    format=f"{num_format}",
+                ),
+            ],
+        )
+    )
+    # --- COMBINE LAYERS & APPLY GLOBAL CONFIGS ---
+    # High-level configurations (titles, axis configs) go here
+    final_chart = (
+        alt.layer(
+            line_layer,
+            capacity_layer,
+            title=alt.Title(
+                f"{title}",
+                subtitle=f"{subtitle_text}",
+                fontSize=20,
+                anchor="start",
+                offset=20,
+            ),
+        )
+        .properties(height=350)
+        .configure_axis(
+            domainColor="black",
+            domainWidth=10,
+            gridColor="black",
+            gridWidth=2,
+            gridOpacity=0.03,
+        )
+    )
+    st.altair_chart(final_chart, width=700)
