@@ -5,7 +5,7 @@ import pydeck as pdk
 import altair as alt
 import calendar
 import datetime
-from lib_function import insert_icon, line_chart_inventory, bar_chart_inventory
+from lib_function import insert_icon, line_chart_inventory, bar_chart_inventory, line_chart_inventory_with_capacity
 
 print("-----------------------------------------------------------------------------------------------------------------------------------------")
 print("Start printing")
@@ -14,8 +14,8 @@ print("Start printing")
 st.set_page_config(layout="wide")
 
 #----------------------------- Set folder path
-# path = "B. Project/whs_monitor_data/"
-path = "whs_monitor_data/"
+path = "B. Project/whs_monitor_data/"
+# path = "whs_monitor_data/"
 
 #----------------------------- Read data file
 df_master_branch = pd.read_csv(path+"master_warehouse_branches.csv", sep=",")
@@ -244,7 +244,7 @@ with tab2:
         
         # Inventory volume per principal
         df_chart3 = df_inventory_product_kpi.copy()
-        df_chart3["Inventory_Volume_m3"] = df_chart3["Product_Qty"] * df_inventory["Product_Volume_cm3"] / 1000000
+        df_chart3["Inventory_Volume_m3"] = df_chart3["Product_Qty"] * df_chart3["Product_Volume_cm3"] / 1000000
         df_chart3 = df_chart3.groupby(["Principal_ID","Principal_ID_Name"])["Inventory_Volume_m3"].sum().reset_index()
         bar_chart_inventory(df_chart3, "Inventory Volume (m3) by Principal", period, "Principal_ID", "Inventory_Volume_m3")
         
@@ -260,8 +260,64 @@ with tab2:
 
 #----------------------------- Tab 3 : Warehouse & Inventory Analysis
 with tab3:
-    selected_branch2 = st.selectbox(label="Branch", placeholder="Select a branch...", options=branch_list, index=None, key=1)
-    st.write(df_inventory)
+    if selected_branch==None:
+        st.write("Please select a branch in the previous page.")
+    else:
+        # st.write("Selected branch :", selected_branch)
+        # st.write("On period :", period)
+        df_inventory2 = df_inventory.copy()
+        df_inventory2["Inventory_Volume"] = df_inventory2["Product_Qty"] * df_inventory2["Product_Volume_cm3"] / 1000000
+        df_inventory2['Expiry_Date'] = pd.to_datetime(df_inventory2['Expiry_Date'], format="%m/%d/%Y")
+        df_inventory2["Expired_Aging"] = (df_inventory2["Expiry_Date"] - df_inventory2['Stock_Date']).dt.days
+        df_inventory2["Expired_Flag"] = df_inventory2.apply(lambda x: "Y" if x["Expired_Aging"] < 0 else "N", axis=1)
+
+        df_whs_info = df_inventory2[df_inventory2["Month_Name"]=="Dec"].copy()
+        df_whs_inv_value = df_whs_info["Inventory_Value"].sum()
+        df_whs_inv_exp_value = df_whs_info[df_whs_info["Expired_Flag"]=="Y"]["Inventory_Value"].sum()
+        df_whs_inv_volume = df_whs_info["Inventory_Volume"].sum()
+        df_whs_inv_exp_volume = df_whs_info[df_whs_info["Expired_Flag"]=="Y"]["Inventory_Volume"].sum()
+        df_chart5 = df_whs_info[df_whs_info["Expired_Flag"]=="Y"].groupby(["Principal_ID","Principal_ID_Name"])["Inventory_Value"].sum().reset_index()
+
+        df_whs_info = df_master_branch.copy()
+        df_whs_capacity = df_whs_info["Branch_Capacity_m3"].iloc[0]
+        df_whs_info["Branch_Capacity_m3"] = f"{df_whs_capacity:,}"
+        df_whs_info[f"Inventory Value ({period})"] = f"{df_whs_inv_value:,}"
+        df_whs_info[f"Expired Inventory Value ({period})"] = f"{df_whs_inv_exp_value:,}"
+        df_whs_info[f"Expired Inventory Value Percentage ({period})"] = f"{df_whs_inv_exp_value/df_whs_inv_value:.2%}"
+        # df_whs_info[f"Inventory Volume ({period})"] = f"{df_whs_inv_volume:,.2f} m3"
+        df_whs_info[f"Expired Inventory Volume ({period})"] = f"{df_whs_inv_exp_volume:,.2f} m3"
+        # df_whs_info[f"Expired Inventory Volume Percentage ({period})"] = f"{df_whs_inv_exp_volume/df_whs_inv_volume:.2%}"
+        df_whs_info_T = df_whs_info.T
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write(df_whs_info_T)
+        with col2:
+            # Expired Inventory value per principal
+            bar_chart_inventory(df_chart5, "Expired Inventory Value by Principal", period, "Principal_ID", "Inventory_Value")
+        
+        st.write(f'''As {period} in {selected_branch}, the expired inventory value is {df_whs_inv_exp_value/df_whs_inv_value:.2%} from all inventory in the warehouse.
+            They also consume {df_whs_inv_exp_volume:,.2f} m3 or {df_whs_inv_exp_volume/df_whs_capacity:.2%} of the warehouse capacity. The graph above show which
+            principal gives the most expired product in the warehouse. What will happend if the expired inventory are excluded from the warehouse (returned or destroyed).
+        ''')
+        
+        col1, col2 = st.columns(2)
+        # All inventory
+        with col1:
+            # Inventory volume per month
+            df_chart6 = df_inventory2.copy()
+            df_chart6 = df_chart6.groupby(["Month_Name","Period","Date_YYYYmm"])["Inventory_Volume_m3"].sum().reset_index()
+            df_chart6["Capacity Usage"] = df_chart6["Inventory_Volume_m3"]/df_whs_capacity
+            df_chart6["Full Capacity"] = 1
+            line_chart_inventory_with_capacity(df_chart6, "Month_Name", "Capacity Usage", "Capacity Usage", "", "Date_YYYYmm", "Capacity Usage", df_chart6, "Full Capacity")
+        # Exclude expired inventory
+        with col2:
+            # Inventory volume per month
+            df_chart7 = df_inventory2.copy()
+            df_chart7 = df_chart7[df_chart7["Expired_Flag"]=="N"].groupby(["Month_Name","Period","Date_YYYYmm"])["Inventory_Volume_m3"].sum().reset_index()
+            df_chart7["Capacity Usage"] = df_chart7["Inventory_Volume_m3"]/df_whs_capacity
+            df_chart7["Full Capacity"] = 1
+            line_chart_inventory_with_capacity(df_chart7, "Month_Name", "Capacity Usage", "Capacity Usage (Exclude Expired Inventory)", "", "Date_YYYYmm", "Capacity Usage (Exclude Expired Inventory)", df_chart7, "Full Capacity")
         
 
 
