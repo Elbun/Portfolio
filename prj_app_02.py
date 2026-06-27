@@ -14,8 +14,8 @@ print("Start printing")
 st.set_page_config(layout="wide")
 
 #----------------------------- Set folder path
-# path = "B. Project/whs_monitor_data/"
-path = "whs_monitor_data/"
+path = "B. Project/whs_monitor_data/"
+# path = "whs_monitor_data/"
 
 #----------------------------- Read data file
 df_master_branch = pd.read_csv(path+"master_warehouse_branches.csv", sep=",")
@@ -107,10 +107,21 @@ with tab1:
         ''')
     
     st.subheader("Product Result")
-    st.html('''<p style="text-align:justify;">Text</p>''')
+    st.html('''<p style="text-align:justify;">As the result, there will be a monitoring dashboard to monitor all warehouse performance. The KPIs show inventory metrics 
+        in quantity, value, and volume. The warehouse capacity usage shows the ratio between inventory volume compared to warehouse capacity in percentage. Also the
+        special KPI (Day of Inventory) shows how long the inventory stays in the warehouse. The line charts show the movement of metrics across the year and the bar charts
+        show the comparation of metrics between principals.</p>
+        
+        <p style="text-align:justify;">There is also an additional section for warehouse analysis. In the warehouse, there are many stocks that are already expired (recorded
+        in every period). The analysis shows about what if all the expired stocks are eliminated (returned or destroyed) from the warehouse. ALl the expired inventory value from each principal is 
+        shown in a bar chart. If they can be returned, it means the company can save not only space in warehouse but also some cash. What will happen to the metrics because 
+        of the inventory reduction are illustrated by the line charts.</p>''')
     
     st.subheader("Future Improvements")
-    st.html('''<p style="text-align:justify;">Text</p>''')
+    st.html('''<p style="text-align:justify;">To achieve a better warehouse performance, each warehouse must operate based on standard or agreement. For example, there is an 
+        agreement about the best DOI for each principal how to calculate it (based on some period of average sales). So the warehouse can maintain the principal's products to move faster. If the warehouse DOI is greater than the agreement,
+        we can do further analysis to find what product that make up the number and what the reason (maybe the expired inventory in warehouse, too many product return from customer,
+        or issue in sales performance).</p>''')
     
 
 #----------------------------- Tab 2 : Warehouse Monitoring Dashboard
@@ -286,7 +297,7 @@ with tab3:
         df_whs_info[f"Expired Inventory Value Percentage ({period})"] = f"{df_whs_inv_exp_value/df_whs_inv_value:.2%}"
         # df_whs_info[f"Inventory Volume ({period})"] = f"{df_whs_inv_volume:,.2f} m3"
         df_whs_info[f"Expired Inventory Volume ({period})"] = f"{df_whs_inv_exp_volume:,.2f} m3"
-        # df_whs_info[f"Expired Inventory Volume Percentage ({period})"] = f"{df_whs_inv_exp_volume/df_whs_inv_volume:.2%}"
+        df_whs_info[f"Expired Inventory Volume to Capacity ({period})"] = f"{df_whs_inv_exp_volume/df_whs_capacity:.2%}"
         df_whs_info_T = df_whs_info.T
         
         col1, col2 = st.columns(2)
@@ -296,29 +307,61 @@ with tab3:
             # Expired Inventory value per principal
             bar_chart_inventory(df_chart5, "Expired Inventory Value by Principal", period, "Principal_ID", "Inventory_Value")
         
-        st.write(f'''As {period} in {selected_branch}, the expired inventory value is {df_whs_inv_exp_value/df_whs_inv_value:.2%} from all inventory in the warehouse.
-            They also consume {df_whs_inv_exp_volume:,.2f} m3 or {df_whs_inv_exp_volume/df_whs_capacity:.2%} of the warehouse capacity. The graph above show which
-            principal gives the most expired product in the warehouse. What will happend if the expired inventory are excluded from the warehouse (returned or destroyed).
+        st.write(f'''As {period} in {selected_branch}, the expired inventory value is {df_whs_inv_exp_value/df_whs_inv_value:.2%} from all inventory value in the warehouse.
+            They also consume {df_whs_inv_exp_volume:,.2f} m3 or {df_whs_inv_exp_volume/df_whs_capacity:.2%} of the warehouse capacity. The graph in top right shows which
+            principal gives the most expired product in the warehouse. What will happend if all the expired inventory are eliminated from the warehouse (returned or destroyed)?
         ''')
+        st.space()
         
         col1, col2 = st.columns(2)
-        # All inventory
         with col1:
             # Inventory volume per month
             df_chart6 = df_inventory2.copy()
             df_chart6 = df_chart6.groupby(["Month_Name","Period","Date_YYYYmm"])["Inventory_Volume_m3"].sum().reset_index()
             df_chart6["Capacity Usage"] = df_chart6["Inventory_Volume_m3"]/df_whs_capacity
             df_chart6["Full Capacity"] = 1
-            line_chart_inventory_with_capacity(df_chart6, "Month_Name", "Capacity Usage", "Capacity Usage", "", "Date_YYYYmm", "Capacity Usage", df_chart6, "Full Capacity")
-        # Exclude expired inventory
+            value_from = df_chart6[df_chart6["Month_Name"]==month]["Capacity Usage"].iloc[0]
+            line_chart_inventory_with_capacity(df_chart6, "Month_Name", "Capacity Usage", "Warehouse Capacity Usage", "", "Date_YYYYmm", "Capacity Usage", df_chart6, "Full Capacity")
         with col2:
             # Inventory volume per month
             df_chart7 = df_inventory2.copy()
             df_chart7 = df_chart7[df_chart7["Expired_Flag"]=="N"].groupby(["Month_Name","Period","Date_YYYYmm"])["Inventory_Volume_m3"].sum().reset_index()
             df_chart7["Capacity Usage"] = df_chart7["Inventory_Volume_m3"]/df_whs_capacity
             df_chart7["Full Capacity"] = 1
-            line_chart_inventory_with_capacity(df_chart7, "Month_Name", "Capacity Usage", "Capacity Usage (Exclude Expired Inventory)", "", "Date_YYYYmm", "Capacity Usage (Exclude Expired Inventory)", df_chart7, "Full Capacity")
+            value_to = df_chart7[df_chart7["Month_Name"]==month]["Capacity Usage"].iloc[0]
+            line_chart_inventory_with_capacity(df_chart7, "Month_Name", "Capacity Usage", "Warehouse Capacity Usage (Exclude Expired Inventory)", "", "Date_YYYYmm", "Capacity Usage (Exclude Expired Inventory)", df_chart7, "Full Capacity")
+            st.write(f'''
+                Warehouse capacity usage will reduce from {value_from:.2%} to {value_to:.2%} as {period}.
+            ''')
         
-
+        st.space()
+        col1, col2 = st.columns(2)
+        with col1:
+            # DOI per month
+            df_chart8a = df_inventory2.copy()
+            df_chart8a = df_chart8a.merge(df_as_of_month[df_as_of_month["Type"]=="Inventory"], on="Month_Num", how="inner")
+            df_chart8a = df_chart8a.groupby(["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm","Type"])["Inventory_Value"].sum().reset_index()
+            df_chart8b = df_sales.copy()
+            df_chart8b = df_chart8b.merge(df_as_of_month[df_as_of_month["Type"]=="Sales"], on="Month_Num", how="inner")
+            df_chart8b = df_chart8b.groupby(["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm","Type"])["Sales_Value"].sum().reset_index()
+            df_chart8 = df_chart8a.merge(df_chart8b, on=["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm"], how="inner")
+            df_chart8["DOI"] = df_chart8["Inventory_Value"] / (df_chart8["Sales_Value"]/3) * 30
+            value_from = df_chart8[df_chart8["As_of_Month_Name"]==month]["DOI"].iloc[0]
+            line_chart_inventory(df_chart8, "As_of_Month_Name", "DOI", "Day of Inventory", "", "As_of_Date_YYYYmm", "DOI")
+        with col2:
+            # DOI per month
+            df_chart9a = df_inventory2[df_inventory2["Expired_Flag"]=="N"].copy()
+            df_chart9a = df_chart9a.merge(df_as_of_month[df_as_of_month["Type"]=="Inventory"], on="Month_Num", how="inner")
+            df_chart9a = df_chart9a.groupby(["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm","Type"])["Inventory_Value"].sum().reset_index()
+            df_chart9b = df_sales.copy()
+            df_chart9b = df_chart9b.merge(df_as_of_month[df_as_of_month["Type"]=="Sales"], on="Month_Num", how="inner")
+            df_chart9b = df_chart9b.groupby(["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm","Type"])["Sales_Value"].sum().reset_index()
+            df_chart9 = df_chart9a.merge(df_chart9b, on=["As_of_Month_Name","As_of_Period","As_of_Date_YYYYmm"], how="inner")
+            df_chart9["DOI"] = df_chart9["Inventory_Value"] / (df_chart9["Sales_Value"]/3) * 30
+            value_to = df_chart9[df_chart9["As_of_Month_Name"]==month]["DOI"].iloc[0]
+            line_chart_inventory(df_chart9, "As_of_Month_Name", "DOI", "Day of Inventory (Exclude Expired Inventory)", "", "As_of_Date_YYYYmm", "DOI")
+            st.write(f'''
+                DOI will reduce from {value_from:.2f} to {value_to:.2f} as {period}.
+            ''')
 
 print("End printing")
