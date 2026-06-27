@@ -125,7 +125,7 @@ def sales_horizontal_bar_chart(df, chart_title, x, y, variable, color, subtitle_
     st.altair_chart(bar_chart1, width=450)
 
 
-def line_chart_inventory(df,x,y,title,subtitle_text,x_sort,y_tooltip,):
+def line_chart_inventory(df,x,y,title,subtitle_text,x_sort,y_tooltip):
     if y_tooltip=="DOI":
         num_format = ",.2f"
     else:
@@ -175,7 +175,20 @@ def line_chart_inventory(df,x,y,title,subtitle_text,x_sort,y_tooltip,):
     ).properties(
         height=350
     )
-    st.altair_chart(line_chart, width=700)
+
+    final_chart = line_chart
+
+    # # Text Layer for Values
+    # if point_value=="Y":
+    #     text_labels = line_chart.mark_text(
+    #         align="center",
+    #         baseline="bottom",
+    #         dy=-10,  # Shifts the text slightly above the point
+    #     ).encode(
+    #         text=f"{y}:Q"  # The value to display
+    #     )
+    #     final_chart = line_chart+text_labels
+    st.altair_chart(final_chart, width=700)
 
 def bar_chart_inventory(df,chart_title,subtitle_text,x,y):
     if chart_title=="Day of Inventory":
@@ -264,7 +277,8 @@ def line_chart_inventory_with_capacity(df,x,y,title,subtitle_text,x_sort,y_toolt
                     field=f"{x_sort}", order="ascending"
                 ),
             ).axis(title=None, labelAngle=0, labelFontWeight="bold"),
-            y=alt.Y(f"{capacity_col}:Q"),  # Y maps to the capacity data
+            y=alt.Y(f"{capacity_col}:Q",
+                axis=alt.Axis(format='%')),  # Y maps to the capacity data
             tooltip=[
                 x,
                 alt.Tooltip(
@@ -296,6 +310,8 @@ def line_chart_inventory_with_capacity(df,x,y,title,subtitle_text,x_sort,y_toolt
             gridColor="black",
             gridWidth=2,
             gridOpacity=0.03,
+        ).configure_point(
+        size=100
         )
     )
     st.altair_chart(final_chart, width=700)
