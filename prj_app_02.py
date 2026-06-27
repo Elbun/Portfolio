@@ -119,7 +119,8 @@ with tab1:
     
     st.subheader("Future Improvements")
     st.html('''<p style="text-align:justify;">To achieve a better warehouse performance, each warehouse must operate based on standard or agreement. For example, there is an 
-        agreement about the best DOI for each principal how to calculate it (based on some period of average sales). So the warehouse can maintain the principal's products to move faster. If the warehouse DOI is greater than the agreement,
+        agreement about the best DOI for each principal how to calculate it (based on my experience, there are some principals want to include sales forecast to calculate DOI). 
+        So the warehouse can maintain the principal's products to move faster. If the warehouse DOI is greater than the agreement,
         we can do further analysis to find what product that make up the number and what the reason (maybe the expired inventory in warehouse, too many product return from customer,
         or issue in sales performance).</p>''')
     
